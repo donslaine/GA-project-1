@@ -1,22 +1,24 @@
 
 As a User
 	Version 1
-		I want a game board where I can place my ships
-		I want the computer to have a game board where they can place their ships
-		I want to click on the computer's game board to select a tile to attack
-		I want my gameboard to display where my opponent has attacked
-		I want to place three 3-tile long ships on my game board
-		I want a message to display whether or not my attack was a hit
-		I want a message to display whether or not my opponent's attack was a hit
-		I want a message to display when either player has sunk a ship (3 hits)
-		I want a message to display when a player has won the game (3 sinks)
+		I want to have a standard 52 card deck to play with
+			// this will be created using js classes
+			// create a 'deck' class whose constructor takes 1 parameter: cards
+			// create a separate class for 'card' which takes 2 parameters: suit and value
+			// create an array of the 4 different suits and store it in const suits
+			// create an array of the 13 different card values and store it in const values
+			// write a function that will implement .flatmap() and .map() to assign all the values a suit and return 1 array of 52 cards
+			// call the function
+		I want the deck to shuffle before each round
+			// implement the durstenfeld shuffle algorithm on the created deck
+			// store this in a class method
+		I want to see the dealer's cards (1 up, 1 down)
+			// dealer's cards will be stored in an array
+		I want to see my cards (2 up)
+		I want buttons for my options (hit, stand, submit wager)
+		I want to know when I bust
+		I want to have the ability to submit a wager
 	Version 2
-		I want a sound to play when there is a hit on a ship
-		I want a sound to play when there is a miss on a ship
-		I want a sound to play once the players have chosen their ship positions
-		I want an animation to play when a ship has been sunk
-        I want an animation to play when there is a hit on a ship
-        I want an animation to play when there is a miss
-        I want 
+		
 	Version 3
-        I want to be able to play against another human being
+        

@@ -91,10 +91,10 @@ User Stories
 
 				-since the "Ace" card can hold the value of either 11 or 1, the game will need to determine which value is more useful:
 
-				function computeHandValue(userHand) {
+				function computeHandValue(hand) {
 					the value equals zero
-					for each index passed in, value equals itself plus that index
-					return the total of all indeces
+					for each index of hand, value equals itself plus that index
+					return the value
 				}
 
 			-the stand button will trigger a compareHands function that will compare playerHandValue to dealerHandValue:
@@ -107,19 +107,22 @@ User Stories
 		5. As a user, I want to know when I bust.
 
 			-a "bust" occurs when the player "hits" and the value of their hand goes over 21. Because the Ace can have a value of 1 if your hand is over 21, we will need to take this into account when there is a "bust". We can assume that if the player has a hand that contains an "Ace" AND is over 21, they will choose to reassign the "Ace" value to 1, and the game will have to do that for them.
-			
-			-we will use the same computeHandValue function as before, but this time we will need to check for the "Ace"
 
-			-in the controller, we will call the computeHandValue() after each 'hit' and check it against 21:
+			-we will have a function called checkBust() that will check if the userHand has a value over 21. We will use our computeHandValue function from before. Inside we'll also use a conditional to check if there is an "ace":
 
-				if playerHandValue > 21 AND card.value is "A" {
-					card.value is changed to 1
-					computeHandValue is called again
-				} 
+				function checkBust {
+					compute the value of the user's hand
+					IF it is over 21 AND there is an card with value 11 in it
+						change the value of that card from 11 to 1
+				}
 
-			-
+			-checkBust will go inside the event listener associated with the "Hit" button. If a bust occurs, we'll update the innerHTML of the message board to say "BUST".
 
-		6. As a user, I want to have the ability to submit a wager.
+		6. As a user, I want to be able to see how much money I have to play with.
+
+			-we will have a global variable called "bank", initialized to an arbitrary number (let's say 100). This number will be changed in the controller when a wager is submitted and when the user wins a round.
+
+		7. As a user, I want to have the ability to submit a wager.
 
 			-we will hardcode a button and textbox into the html.
 
@@ -130,10 +133,37 @@ User Stories
 				on submit wager button click {
 					wager will equal value typed into textbox
 					}
+
+			-in the controller, when the user wins, we will set the bank to equal itself + (wager x2)
 		
-		As a user, I want to see the dealer's cards (1 up, 1 down)
-		I want to see my cards (2 up)
-		I want to be able to see how much money I have to play with
+		8. As a user, I want to see the dealer's cards (1 up, 1 down)
+
+			-we will use a div for each card, and the first two cards will be shown when the user presses the "begin" button.
+
+			-the cards will have basic CSS properties that will make them look like rectangles with rounded edges:
+
+				1 pixel solid black border
+				border radius of .4rem
+				flex
+				centered text
+				3rem font size
+
+			-all cards will have the same class
+
+			-for now, we will leave the first div devoid of text to represent a face-down card. The second div will contain the text of card.value ("2", "J", "A", etc)
+
+		9. As a user, I want to see my cards (2 up).
+
+			-just like with the dealer's cards, we will have two divs hardcoded into the html that will initialize when the cards are dealt
+
+			-with every hit() call, we will add a new div that represents a card dealt from the deck:
+				
+				create element div
+				give it the same class as the other cards
+				change div's inner text to card.value
+				append div
+				
+		
 	Version 2
 		I want to have the option to double down
 		I want to have the option to split my hand

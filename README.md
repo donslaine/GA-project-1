@@ -7,11 +7,11 @@
 
 Blackjack is a betting game played with a 52-card Standard deck; a mainstay at every casino around the world. The object of the game is simple: beat the dealer without your hand value exceeding 21 points. First, a wager is submitted. Then, each player at the table is dealt two cards face up, while the dealer is dealt one card face up, one card face down. In person, the game is played on a table with 7 seats. For this game, we will be working with 1 player vs the dealer. This is a wireframe of the initial game-state:
 
-![Initial game-state after cards are dealt](/README-pics/BlackJackWireframe.png)
+![Initial game-state after cards are dealt](README-pics/BlackJackWireframe.png)
 
 If a player is dealt a hand with a value of 21 (10, J, Q, or K plus A), they have "Blackjack", and immediately win 1.5x their wager. In turn order, each player decides whether or not they want to add a card to their hand, or "Hit". If a player chooses to "Hit", a new card is dealt to their hand. 
 
-![Game Board After a Hit](/README-pics/GameBoardAfterHit.png)
+![Game Board After a Hit](README-pics/GameBoardAfterHit.png)
 
 If the hand goes over 21, the player has a "bust" and loses immediately. If the hand is still worth less than 21, the player can choose to "hit" again or "stand". Once each player's turn has ended, the dealer will flip up their face-down card and play their hand in the same fashion. If the dealer has a "bust", everyone who is still in the game wins 2x their wager. If not, Then those who have a hand value higher than the dealer's hand win 2x their wager. If there is a tie, the wager is returned.
 
@@ -42,7 +42,7 @@ If the hand goes over 21, the player has a "bust" and loses immediately. If the 
 	- in the Deck constructor, set the cards parameter to equal the newDeck() function call:
 
 			class Deck {
-				constructor() {
+				constructor(cards) {
 					these cards are equal to the newDeck cards
 				}
 			}

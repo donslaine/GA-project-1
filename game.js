@@ -67,6 +67,11 @@ const cardDictionary = {
     "K": 10,
     "A": 11
 }
+const hitButton = document.getElementById("hit")
+const standButton = document.getElementById("stand")
+const submitWager = document.getElementById("submit-wager")
+const wagerBox = document.getElementById("wager")
+let wager, bank, userHandValue
 const userHand = []
 const dealerHand = []
 
@@ -75,7 +80,17 @@ const initialize = () => {
     dealCards()
 }
 
+const controller = () => {
+    hitButton.addEventListener("click", () => {
+        hit()
+    })
+    standButton.addEventListener("click", () => {
+        
+    })
+}
+
 initialize()
+controller()
 
 // implementing durstenfeld shuffle algorithm here (https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
 function shuffle(array) {
@@ -98,19 +113,32 @@ function dealCards() {
 
 function hit() {
     userHand.push(deck.shift())
-    computeHandValue(userHand)
+    console.log(userHand)
+    checkForBust(userHand)
 }
 
 function computeHandValue(hand) {
-    let handValue = 0
+    userHandValue = 0
     hand.forEach(index => {
-        handValue += cardDictionary[index.value]
+        userHandValue += cardDictionary[index.value]
     })
-    return handValue
 }
 
-// function checkForBust(hand) {
-//     if (computeHandValue(hand) > 21) {
-//         hand.
-//     }
-// }
+function checkForBust(hand) {
+    computeHandValue(hand)
+    if (userHandValue > 21) {
+        console.log("BUST!")
+    } else {
+        return
+    }
+}
+
+function compareHands(userHand, dealerHand) {
+    if (computeHandValue(userHand) > computeHandValue(dealerHand)) {
+        console.log(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
+    } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
+        console.log(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
+    } else {
+        console.log("Tie, wager returned.")
+    }
+}

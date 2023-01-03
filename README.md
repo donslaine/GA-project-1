@@ -7,7 +7,7 @@
 
 Blackjack is a betting game played with a 52-card Standard deck; a mainstay at every casino around the world. The object of the game is simple: beat the dealer without your hand value exceeding 21 points. First, a wager is submitted. Then, each player at the table is dealt two cards face up, while the dealer is dealt one card face up, one card face down. In person, the game is played on a table with 7 seats. For this game, we will be working with 1 player vs the dealer. This is a wireframe of the initial game-state:  
 
-![Initial game-state after cards are dealt](README-pics/BlackJackWireframe.png)  
+![Initial game-state after cards are dealt](README-pics/BlackJackWireFrame.png)  
 
 If a player is dealt a hand with a value of 21 (10, J, Q, or K plus A), they have "Blackjack", and immediately win 1.5x their wager. In turn order, each player decides whether or not they want to add a card to their hand, or "Hit". If a player chooses to "Hit", a new card is dealt to their hand.  
 

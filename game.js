@@ -75,20 +75,21 @@ const userHand = []
 const dealerHand = []
 let bank = 300
 let wager, userHandValue, dealerHandValue
+let dealerBust = false
+// let userBust = false
+const testHandAce = [{value: "A", suit: "♣"}, {value: "Q", suit: "♠"}]
 
 const initialize = () => {
     shuffle(deck)
-    dealCards()
+    console.log("Please Submit a wager")
     wager = 0
 }
 
 const controller = () => {
-    dealerHandValue = computeHandValue(dealerHand)
-    userHandValue = computeHandValue(userHand)
     hitButton.addEventListener("click", () => {
         hit(userHand)
         userHandValue = computeHandValue(userHand)
-        console.log(userHandValue)
+        console.log(userHand)
     })
     standButton.addEventListener("click", () => {
         if (dealerHandValue > 17) {
@@ -96,12 +97,25 @@ const controller = () => {
         } else {
             hit(dealerHand)
             dealerHandValue = computeHandValue(dealerHand)
-            console.log(dealerHandValue)
+            console.log(dealerHand)
             checkForDealerBust(dealerHand)
+            while (!dealerBust) {
+                hit(dealerHand)
+                dealerHandValue = computeHandValue(dealerHand)
+            }
         }
     })
-    console.log(`user: ${userHandValue}`)
-    console.log(`dealer: ${dealerHandValue}`)
+    submitWager.addEventListener("click", () => {
+        wager = wagerBox.value
+        bank -= wager
+        console.log(`wager: ${wager}`)
+        dealCards()
+        dealerHandValue = computeHandValue(dealerHand)
+        userHandValue = computeHandValue(userHand)
+        console.log(userHand)
+        console.log(dealerHand)
+    })
+    
 }
 
 initialize()
@@ -140,14 +154,14 @@ function computeHandValue(hand) {
 function checkForDealerBust(hand) {
     computeHandValue(hand)
     if(handValue > 21) {
-        console.log("The dealer busted, you Win!")
+        checkForDealerAce(hand)
     } else return
 }
 
 function checkForBust(hand) {
     computeHandValue(hand)
     if (handValue > 21) {
-        console.log("BUST!")
+        checkForAce(hand)
     } else return
 }
 
@@ -158,7 +172,7 @@ function compareHands(userHand, dealerHand) {
     } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
         console.log(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
     } else {
-        console.log("Tie, wager returned.")
+        console.log("Push")
         bank += wager
     }
 }
@@ -168,5 +182,26 @@ function checkForBlackjack(hand) {
     if (handValue === 21) {
         bank += (wager * 1.5)
         console.log("Blackjack!")
+    }
+}
+
+function checkForAce(hand) {
+    let hasAce = hand.some(x => x.value === "A")
+    if (hasAce) {
+        cardDictionary["A"] = 1
+    } else {
+        console.log("Bust, you lose")
+        wager = 0
+    }
+}
+
+function checkForDealerAce(hand) {
+    let hasAce = hand.some(x => x.value === "A")
+    if (hasAce) {
+        cardDictionary["A"] = 1
+    } else {
+        console.log("The dealer busted, you win!")
+        bank += (wager * 2)
+        dealerBust = true
     }
 }

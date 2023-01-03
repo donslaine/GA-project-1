@@ -1,3 +1,9 @@
 * {
     background-color: lightgray;
 }
+
+.card {
+    border: 1px solid black;
+    border-radius: .4rem;
+    
+}

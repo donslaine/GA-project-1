@@ -1,57 +1,3 @@
-const deck = [
-    {value: "2", suit: "♥"},
-    {value: "3", suit: "♥"},
-    {value: "4", suit: "♥"},
-    {value: "5", suit: "♥"},
-    {value: "6", suit: "♥"},
-    {value: "7", suit: "♥"},
-    {value: "8", suit: "♥"},
-    {value: "9", suit: "♥"},
-    {value: "10", suit: "♥"},
-    {value: "J", suit: "♥"},
-    {value: "Q", suit: "♥"},
-    {value: "K", suit: "♥"},
-    {value: "A", suit: "♥"},
-    {value: "2", suit: "♦"},
-    {value: "3", suit: "♦"},
-    {value: "4", suit: "♦"},
-    {value: "5", suit: "♦"},
-    {value: "6", suit: "♦"},
-    {value: "7", suit: "♦"},
-    {value: "8", suit: "♦"},
-    {value: "9", suit: "♦"},
-    {value: "10", suit: "♦"},
-    {value: "J", suit: "♦"},
-    {value: "Q", suit: "♦"},
-    {value: "K", suit: "♦"},
-    {value: "A", suit: "♦"},
-    {value: "2", suit: "♠"},
-    {value: "3", suit: "♠"},
-    {value: "4", suit: "♠"},
-    {value: "5", suit: "♠"},
-    {value: "6", suit: "♠"},
-    {value: "7", suit: "♠"},
-    {value: "8", suit: "♠"},
-    {value: "9", suit: "♠"},
-    {value: "10", suit: "♠"},
-    {value: "J", suit: "♠"},
-    {value: "Q", suit: "♠"},
-    {value: "K", suit: "♠"},
-    {value: "A", suit: "♠"},
-    {value: "2", suit: "♣"},
-    {value: "3", suit: "♣"},
-    {value: "4", suit: "♣"},
-    {value: "5", suit: "♣"},
-    {value: "6", suit: "♣"},
-    {value: "7", suit: "♣"},
-    {value: "8", suit: "♣"},
-    {value: "9", suit: "♣"},
-    {value: "10", suit: "♣"},
-    {value: "J", suit: "♣"},
-    {value: "Q", suit: "♣"},
-    {value: "K", suit: "♣"},
-    {value: "A", suit: "♣"},
-]
 const cardDictionary = {
     "2": 2,
     "3": 3,
@@ -67,49 +13,83 @@ const cardDictionary = {
     "K": 10,
     "A": 11
 }
+const suits = ["♠", "♦", "♣", "♥"]
+const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 const hitButton = document.getElementById("hit")
 const standButton = document.getElementById("stand")
 const submitWager = document.getElementById("submit-wager")
 const wagerBox = document.getElementById("wager")
-const userHand = []
-const dealerHand = []
+const bankP = document.getElementById("bank")
+let userHand = []
+let dealerHand = []
 let bank = 300
-let wager, userHandValue, dealerHandValue
-let dealerBust = false
-// let userBust = false
-const testHandAce = [{value: "A", suit: "♣"}, {value: "Q", suit: "♠"}]
+let wager, userHandValue, dealerHandValue, gameDeck
+let blackjack = false
+let gameStarted = false
+
+class Card {
+    constructor(suit, value) {
+        this.suit = suit
+        this.value = value
+    }
+}
+
+class Deck {
+    constructor(cards = newDeck()) {
+        this.cards = cards
+    }
+
+    // implementing durstenfeld shuffle algorithm here (https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
+    shuffle() {
+        for (var i = this.cards.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = this.cards[i];
+            this.cards[i] = this.cards[j];
+            this.cards[j] = temp;
+        }
+    }
+
+    deal() {
+        return this.cards.pop()
+    }
+}
 
 const initialize = () => {
-    shuffle(deck)
-    console.log("Please Submit a wager")
+    gameDeck = new Deck
     wager = 0
+    console.log("Please submit a wager")
+    return gameDeck.shuffle()
 }
 
 const controller = () => {
+    if (!gameStarted) {
+        initialize()
+    }
     hitButton.addEventListener("click", () => {
-        hit(userHand)
-        userHandValue = computeHandValue(userHand)
+        userHand.push(gameDeck.deal())
         console.log(userHand)
+        userHandValue = computeHandValue(userHand)
+        checkForBust(userHand)
     })
     standButton.addEventListener("click", () => {
-        if (dealerHandValue > 17) {
+        if (dealerHandValue >= 17) {
             compareHands(userHand, dealerHand)
         } else {
-            hit(dealerHand)
+            dealerHand.push(gameDeck.deal())
             dealerHandValue = computeHandValue(dealerHand)
             console.log(dealerHand)
             checkForDealerBust(dealerHand)
-            while (!dealerBust) {
-                hit(dealerHand)
-                dealerHandValue = computeHandValue(dealerHand)
-            }
         }
     })
     submitWager.addEventListener("click", () => {
-        wager = wagerBox.value
+        wager = parseInt(wagerBox.value)
         bank -= wager
+        bankP.innerText = `Bank: $${bank}`
         console.log(`wager: ${wager}`)
-        dealCards()
+        userHand.push(gameDeck.deal())
+        dealerHand.push(gameDeck.deal())
+        userHand.push(gameDeck.deal())
+        dealerHand.push(gameDeck.deal())
         dealerHandValue = computeHandValue(dealerHand)
         userHandValue = computeHandValue(userHand)
         console.log(userHand)
@@ -118,90 +98,92 @@ const controller = () => {
     
 }
 
-initialize()
 controller()
 
-// implementing durstenfeld shuffle algorithm here (https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
-function shuffle(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-}
-
-function dealCards() {
-    userHand.push(deck.shift())
-    dealerHand.push(deck.shift())
-    userHand.push(deck.shift())
-    dealerHand.push(deck.shift())
-}
-
-function hit(hand) {
-    hand.push(deck.shift())
-    checkForBust(hand)
+function newDeck() {
+    return values.flatMap(value => {
+        return suits.map(suit => {
+            return new Card(suit, value)
+        })
+    })
 }
 
 function computeHandValue(hand) {
+    let hasAce = hand.some(x => x.value === "A")
     handValue = 0
     hand.forEach(index => {
        handValue += cardDictionary[index.value]
     })
+    if (handValue > 21 && hasAce) {
+        cardDictionary["A"] = 1
+        handValue = 0
+        hand.forEach(index => {
+            handValue += cardDictionary[index.value]
+         })
+    }
     return handValue
 }
 
 function checkForDealerBust(hand) {
     computeHandValue(hand)
     if(handValue > 21) {
-        checkForDealerAce(hand)
-    } else return
+        console.log("The dealer busted, you win!")
+        bank += (wager * 2)
+        bankP.innerText = `Bank: $${bank}`
+        newRound()
+    } else if (handValue <= 21 && handValue >= 17) {
+        compareHands(userHand, dealerHand)
+    } else {
+        dealerHand.push(gameDeck.deal())
+        console.log(dealerHand)
+        checkForDealerBust(hand)
+    }
 }
 
 function checkForBust(hand) {
     computeHandValue(hand)
     if (handValue > 21) {
-        checkForAce(hand)
+        console.log("Bust, you lose")
+        wager = 0
+        newRound()
     } else return
 }
 
 function compareHands(userHand, dealerHand) {
+    checkForBlackjack(userHand)
     if (computeHandValue(userHand) > computeHandValue(dealerHand)) {
-        console.log(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
-        bank += (wager * 2)
+        if (blackjack) {
+            bank += (wager * 2.5)
+            bankP.innerText = `Bank: $${bank}`
+            console.log("Blackjack! House pays 3:2")
+            newRound()
+        } else {
+            console.log(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
+            bank += (wager * 2)
+            bankP.innerText = `Bank: $${bank}`
+            newRound()
+            }
     } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
         console.log(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
-    } else {
+        newRound()
+    } else if (computeHandValue(userHand) === computeHandValue(dealerHand)) {
         console.log("Push")
         bank += wager
+        bankP.innerText = `Bank: $${bank}`
+        newRound()
     }
 }
 
 function checkForBlackjack(hand) {
     computeHandValue(hand)
     if (handValue === 21) {
-        bank += (wager * 1.5)
-        console.log("Blackjack!")
-    }
+        blackjack = true
+    } else return
 }
 
-function checkForAce(hand) {
-    let hasAce = hand.some(x => x.value === "A")
-    if (hasAce) {
-        cardDictionary["A"] = 1
-    } else {
-        console.log("Bust, you lose")
-        wager = 0
-    }
-}
-
-function checkForDealerAce(hand) {
-    let hasAce = hand.some(x => x.value === "A")
-    if (hasAce) {
-        cardDictionary["A"] = 1
-    } else {
-        console.log("The dealer busted, you win!")
-        bank += (wager * 2)
-        dealerBust = true
-    }
+function newRound() {
+    userHand = []
+    dealerHand = []
+    gameStarted = true
+    initialize()
 }

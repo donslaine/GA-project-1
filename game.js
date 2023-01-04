@@ -73,18 +73,17 @@ const controller = () => {
     hitButton.addEventListener("click", () => {
         userHand.push(gameDeck.deal())
         appendCard(userHand[userHand.length - 1], userContainer)
-        console.log(userHand)
         userHandValue = computeHandValue(userHand)
         checkForBust(userHand)
     })
     standButton.addEventListener("click", () => {
+        document.querySelector(".card").innerText = dealerHand[0].value
         if (dealerHandValue >= 17) {
             compareHands(userHand, dealerHand)
         } else {
             dealerHand.push(gameDeck.deal())
             appendCard(dealerHand[dealerHand.length - 1], dealerContainer)
             dealerHandValue = computeHandValue(dealerHand)
-            console.log(dealerHand)
             checkForDealerBust(dealerHand)
         }
     })
@@ -94,19 +93,18 @@ const controller = () => {
         wager = parseInt(wagerBox.value)
         bank -= wager
         bankP.innerText = `Bank: $${bank}`
-        console.log(`wager: ${wager}`)
         userHand.push(gameDeck.deal())
         dealerHand.push(gameDeck.deal())
         userHand.push(gameDeck.deal())
         dealerHand.push(gameDeck.deal())
         dealerHandValue = computeHandValue(dealerHand)
         userHandValue = computeHandValue(userHand)
-        console.log(userHand)
-        console.log(dealerHand)
         appendCard(userHand[0], userContainer)
         appendCard(userHand[1], userContainer)
         appendCard(dealerHand[0], dealerContainer)
         appendCard(dealerHand[1], dealerContainer)
+        document.querySelector(".card").innerText = ""
+        appendMessage("")
     })
     
 }
@@ -140,7 +138,6 @@ function computeHandValue(hand) {
 function checkForDealerBust(hand) {
     computeHandValue(hand)
     if(handValue > 21) {
-        console.log("The dealer busted, you win!")
         appendMessage("The dealer busted, you win!")
         bank += (wager * 2)
         bankP.innerText = `Bank: $${bank}`
@@ -150,7 +147,6 @@ function checkForDealerBust(hand) {
     } else {
         dealerHand.push(gameDeck.deal())
         appendCard(dealerHand[dealerHand.length - 1], dealerContainer)
-        console.log(dealerHand)
         checkForDealerBust(hand)
     }
 }
@@ -158,7 +154,6 @@ function checkForDealerBust(hand) {
 function checkForBust(hand) {
     computeHandValue(hand)
     if (handValue > 21) {
-        console.log("Bust, you lose")
         appendMessage("Bust, you lose")
         wager = 0
         newRound()
@@ -171,22 +166,18 @@ function compareHands(userHand, dealerHand) {
         if (blackjack) {
             bank += (wager * 2.5)
             bankP.innerText = `Bank: $${bank}`
-            console.log("Blackjack! House pays 3:2")
             appendMessage("Blackjack! House pays 3:2")
             newRound()
         } else {
-            console.log(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
             appendMessage(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
             bank += (wager * 2)
             bankP.innerText = `Bank: $${bank}`
             newRound()
             }
     } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
-        console.log(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
         appendMessage(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
         newRound()
     } else if (computeHandValue(userHand) === computeHandValue(dealerHand)) {
-        console.log("Push")
         appendMessage("Push")
         bank += wager
         bankP.innerText = `Bank: $${bank}`

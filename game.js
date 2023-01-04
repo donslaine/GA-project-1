@@ -20,6 +20,11 @@ const standButton = document.getElementById("stand")
 const submitWager = document.getElementById("submit-wager")
 const wagerBox = document.getElementById("wager")
 const bankP = document.getElementById("bank")
+const userContainer = document.getElementById("user-container")
+const dealerContainer = document.getElementById("dealer-container")
+const gameBoard = document.getElementById("game-board")
+const messageBoard = document.getElementById("message-board")
+let message = document.createElement("h2")
 let userHand = []
 let dealerHand = []
 let bank = 300
@@ -57,7 +62,6 @@ class Deck {
 const initialize = () => {
     gameDeck = new Deck
     wager = 0
-    console.log("Please submit a wager")
     return gameDeck.shuffle()
 }
 
@@ -65,8 +69,10 @@ const controller = () => {
     if (!gameStarted) {
         initialize()
     }
+    appendMessage("Please submit a wager")
     hitButton.addEventListener("click", () => {
         userHand.push(gameDeck.deal())
+        appendCard(userHand[userHand.length - 1], userContainer)
         console.log(userHand)
         userHandValue = computeHandValue(userHand)
         checkForBust(userHand)
@@ -76,12 +82,15 @@ const controller = () => {
             compareHands(userHand, dealerHand)
         } else {
             dealerHand.push(gameDeck.deal())
+            appendCard(dealerHand[dealerHand.length - 1], dealerContainer)
             dealerHandValue = computeHandValue(dealerHand)
             console.log(dealerHand)
             checkForDealerBust(dealerHand)
         }
     })
     submitWager.addEventListener("click", () => {
+        removeCards(dealerContainer)
+        removeCards(userContainer)
         wager = parseInt(wagerBox.value)
         bank -= wager
         bankP.innerText = `Bank: $${bank}`
@@ -94,6 +103,10 @@ const controller = () => {
         userHandValue = computeHandValue(userHand)
         console.log(userHand)
         console.log(dealerHand)
+        appendCard(userHand[0], userContainer)
+        appendCard(userHand[1], userContainer)
+        appendCard(dealerHand[0], dealerContainer)
+        appendCard(dealerHand[1], dealerContainer)
     })
     
 }
@@ -128,6 +141,7 @@ function checkForDealerBust(hand) {
     computeHandValue(hand)
     if(handValue > 21) {
         console.log("The dealer busted, you win!")
+        appendMessage("The dealer busted, you win!")
         bank += (wager * 2)
         bankP.innerText = `Bank: $${bank}`
         newRound()
@@ -135,6 +149,7 @@ function checkForDealerBust(hand) {
         compareHands(userHand, dealerHand)
     } else {
         dealerHand.push(gameDeck.deal())
+        appendCard(dealerHand[dealerHand.length - 1], dealerContainer)
         console.log(dealerHand)
         checkForDealerBust(hand)
     }
@@ -144,6 +159,7 @@ function checkForBust(hand) {
     computeHandValue(hand)
     if (handValue > 21) {
         console.log("Bust, you lose")
+        appendMessage("Bust, you lose")
         wager = 0
         newRound()
     } else return
@@ -156,18 +172,22 @@ function compareHands(userHand, dealerHand) {
             bank += (wager * 2.5)
             bankP.innerText = `Bank: $${bank}`
             console.log("Blackjack! House pays 3:2")
+            appendMessage("Blackjack! House pays 3:2")
             newRound()
         } else {
             console.log(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
+            appendMessage(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
             bank += (wager * 2)
             bankP.innerText = `Bank: $${bank}`
             newRound()
             }
     } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
         console.log(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
+        appendMessage(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
         newRound()
     } else if (computeHandValue(userHand) === computeHandValue(dealerHand)) {
         console.log("Push")
+        appendMessage("Push")
         bank += wager
         bankP.innerText = `Bank: $${bank}`
         newRound()
@@ -176,7 +196,7 @@ function compareHands(userHand, dealerHand) {
 
 function checkForBlackjack(hand) {
     computeHandValue(hand)
-    if (handValue === 21) {
+    if (handValue === 21 && hand.length < 3) {
         blackjack = true
     } else return
 }
@@ -186,4 +206,28 @@ function newRound() {
     dealerHand = []
     gameStarted = true
     initialize()
+}
+
+function appendCard(card, container) {
+    const newCard = document.createElement('div')
+    newCard.innerText = card.value
+    newCard.classList.add('card')
+    container.appendChild(newCard)
+}
+
+function removeCards(container) {
+    let cleanupCards = container.querySelectorAll('.card')
+    cleanupCards.forEach(card => {
+        container.removeChild(card)
+    })
+}
+
+function appendMessage(text) {
+    while (messageBoard.firstChild) {
+            messageBoard.removeChild(messageBoard.firstChild)
+        }
+    let message = document.createElement("h2")
+    message.classList.add("message")
+    message.innerText = text
+    messageBoard.appendChild(message)
 }

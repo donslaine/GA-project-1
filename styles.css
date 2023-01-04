@@ -1,9 +1,28 @@
 * {
     background-color: lightgray;
+    font-family: sans-serif;
 }
+
+.play-container {
+    display: grid;
+    grid-template-columns: 100px 100px 100px 100px 100px 100px;
+    grid-template-rows: 150px;
+}
+
+/* #user-container {
+    display: grid;
+    grid-template-columns: 100px 100px 100px 100px;
+
+}
+
+#dealer-container {
+    display: grid;
+    grid-template-columns: 100px 100px 100px 100px;
+} */
 
 .card {
     border: 1px solid black;
     border-radius: .4rem;
-    
+    text-align: center;
+    font-size: 3rem;
 }

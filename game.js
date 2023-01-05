@@ -47,9 +47,9 @@ class Deck {
 
     // implementing durstenfeld shuffle algorithm here (https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array)
     shuffle() {
-        for (var i = this.cards.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var temp = this.cards[i];
+        for (let i = this.cards.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            let temp = this.cards[i];
             this.cards[i] = this.cards[j];
             this.cards[j] = temp;
         }
@@ -91,26 +91,34 @@ const controller = () => {
         }
     })
     submitWager.addEventListener("click", () => {
-        hitButton.disabled = false
-        standButton.disabled = false
-        submitWager.disabled = true
-        removeCards(dealerContainer)
-        removeCards(userContainer)
-        wager = parseInt(wagerBox.value)
-        bank -= wager
-        bankP.innerText = `Bank: $${bank}`
-        userHand.push(gameDeck.deal())
-        dealerHand.push(gameDeck.deal())
-        userHand.push(gameDeck.deal())
-        dealerHand.push(gameDeck.deal())
-        dealerHandValue = computeHandValue(dealerHand)
-        userHandValue = computeHandValue(userHand)
-        appendCard(userHand[0], userContainer)
-        appendCard(userHand[1], userContainer)
-        appendCard(dealerHand[0], dealerContainer)
-        appendCard(dealerHand[1], dealerContainer)
-        document.querySelector(".card").innerText = ""
-        appendMessage("")
+        if (wagerBox.value === "") {
+            wager = 0
+        } else {
+            wager = parseInt(wagerBox.value)
+        }
+        if (wager < 0 || wager > bank) {
+            appendMessage("Your wager is invalid, try again.")
+        } else {
+            hitButton.disabled = false
+            standButton.disabled = false
+            submitWager.disabled = true
+            removeCards(dealerContainer)
+            removeCards(userContainer)
+            bank -= wager
+            bankP.innerText = `Bank: $${bank}`
+            userHand.push(gameDeck.deal())
+            dealerHand.push(gameDeck.deal())
+            userHand.push(gameDeck.deal())
+            dealerHand.push(gameDeck.deal())
+            dealerHandValue = computeHandValue(dealerHand)
+            userHandValue = computeHandValue(userHand)
+            appendCard(userHand[0], userContainer)
+            appendCard(userHand[1], userContainer)
+            appendCard(dealerHand[0], dealerContainer)
+            appendCard(dealerHand[1], dealerContainer)
+            document.querySelector(".card").innerText = ""
+            appendMessage("")
+        }
     })
 }
 
@@ -208,8 +216,8 @@ function appendCard(card, container) {
 }
 
 function removeCards(container) {
-    let cleanupCards = container.querySelectorAll('.card')
-    cleanupCards.forEach(card => {
+    let cleanupContainer = container.querySelectorAll('.card')
+    cleanupContainer.forEach(card => {
         container.removeChild(card)
     })
 }

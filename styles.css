@@ -3,10 +3,6 @@
     font-family: sans-serif;
 }
 
-/* .hide {
-    opacity: 0.5;
-} */
-
 .play-container {
     display: grid;
     grid-template-columns: 100px 100px 100px 100px 100px 100px;
@@ -18,4 +14,4 @@
     border-radius: .4rem;
     text-align: center;
     font-size: 3rem;
-}
+}    

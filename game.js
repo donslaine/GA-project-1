@@ -1,4 +1,5 @@
 const cardDictionary = {
+    "1": 1,
     "2": 2,
     "3": 3,
     "4": 4,
@@ -31,6 +32,7 @@ let bank = 300
 let wager, userHandValue, dealerHandValue, gameDeck
 let blackjack = false
 let gameStarted = false
+let testHand = [{suit: '♦', value: "A"}, {suit: '♣', value: "A"}]
 
 class Card {
     constructor(suit, value) {
@@ -60,7 +62,7 @@ class Deck {
 }
 
 const initialize = () => {
-    gameDeck = new Deck
+    gameDeck = new Deck()
     wager = 0
     return gameDeck.shuffle()
 }
@@ -88,6 +90,7 @@ const controller = () => {
         }
     })
     submitWager.addEventListener("click", () => {
+        submitWager.disabled = true
         removeCards(dealerContainer)
         removeCards(userContainer)
         wager = parseInt(wagerBox.value)
@@ -106,7 +109,6 @@ const controller = () => {
         document.querySelector(".card").innerText = ""
         appendMessage("")
     })
-    
 }
 
 controller()
@@ -126,7 +128,8 @@ function computeHandValue(hand) {
        handValue += cardDictionary[index.value]
     })
     if (handValue > 21 && hasAce) {
-        cardDictionary["A"] = 1
+        let aceIndex = hand.findIndex(i => i.value === "A")
+        hand[aceIndex].value = "1"
         handValue = 0
         hand.forEach(index => {
             handValue += cardDictionary[index.value]
@@ -138,7 +141,7 @@ function computeHandValue(hand) {
 function checkForDealerBust(hand) {
     computeHandValue(hand)
     if(handValue > 21) {
-        appendMessage("The dealer busted, you win!")
+        appendMessage("The dealer busted, you win! Submit a wager to play again.")
         bank += (wager * 2)
         bankP.innerText = `Bank: $${bank}`
         newRound()
@@ -154,7 +157,7 @@ function checkForDealerBust(hand) {
 function checkForBust(hand) {
     computeHandValue(hand)
     if (handValue > 21) {
-        appendMessage("Bust, you lose")
+        appendMessage("Bust, you lose. Submit a wager to play again.")
         wager = 0
         newRound()
     } else return
@@ -166,19 +169,19 @@ function compareHands(userHand, dealerHand) {
         if (blackjack) {
             bank += (wager * 2.5)
             bankP.innerText = `Bank: $${bank}`
-            appendMessage("Blackjack! House pays 3:2")
+            appendMessage("Blackjack! House pays 3:2. Submit a wager to play again.")
             newRound()
         } else {
-            appendMessage(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win!`)
+            appendMessage(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win! Submit a wager to play again.`)
             bank += (wager * 2)
             bankP.innerText = `Bank: $${bank}`
             newRound()
             }
     } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
-        appendMessage(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins.`)
+        appendMessage(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins. Submit a wager to play again.`)
         newRound()
     } else if (computeHandValue(userHand) === computeHandValue(dealerHand)) {
-        appendMessage("Push")
+        appendMessage("Push. Submit a wager to play again.")
         bank += wager
         bankP.innerText = `Bank: $${bank}`
         newRound()
@@ -196,6 +199,7 @@ function newRound() {
     userHand = []
     dealerHand = []
     gameStarted = true
+    submitWager.disabled = false
     initialize()
 }
 

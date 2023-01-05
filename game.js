@@ -29,10 +29,9 @@ let message = document.createElement("h2")
 let userHand = []
 let dealerHand = []
 let bank = 300
-let wager, userHandValue, dealerHandValue, gameDeck
+let wager, userHandValue, dealerHandValue, gameDeck, handValue, numberOfAces
 let blackjack = false
 let gameStarted = false
-let testHand = [{suit: '♦', value: "A"}, {suit: '♣', value: "A"}]
 
 class Card {
     constructor(suit, value) {
@@ -71,6 +70,8 @@ const controller = () => {
     if (!gameStarted) {
         initialize()
     }
+    hitButton.disabled = true
+    standButton.disabled = true
     appendMessage("Please submit a wager")
     hitButton.addEventListener("click", () => {
         userHand.push(gameDeck.deal())
@@ -90,6 +91,8 @@ const controller = () => {
         }
     })
     submitWager.addEventListener("click", () => {
+        hitButton.disabled = false
+        standButton.disabled = false
         submitWager.disabled = true
         removeCards(dealerContainer)
         removeCards(userContainer)
@@ -121,30 +124,21 @@ function newDeck() {
     })
 }
 
-function computeHandValue(hand) {
-    let hasAce = hand.some(x => x.value === "A")
-    handValue = 0
-    hand.forEach(index => {
-       handValue += cardDictionary[index.value]
-    })
-    if (handValue > 21 && hasAce) {
-        let aceIndex = hand.findIndex(i => i.value === "A")
-        hand[aceIndex].value = "1"
-        handValue = 0
-        hand.forEach(index => {
-            handValue += cardDictionary[index.value]
-         })
-    }
-    return handValue
-}
-
 function checkForDealerBust(hand) {
     computeHandValue(hand)
     if(handValue > 21) {
-        appendMessage("The dealer busted, you win! Submit a wager to play again.")
-        bank += (wager * 2)
-        bankP.innerText = `Bank: $${bank}`
-        newRound()
+        checkForBlackjack(userHand)
+        if (blackjack) {
+            appendMessage("The dealer busted, and you have Blackjack! House pays 3:2. Submit a wager to play again.")
+            bank += (wager * 2)
+            bankP.innerText = `Bank: $${bank}`
+            newRound()
+        } else {
+            appendMessage("The dealer busted, you win! Submit a wager to play again.")
+            bank += (wager * 2)
+            bankP.innerText = `Bank: $${bank}`
+            newRound()
+        }
     } else if (handValue <= 21 && handValue >= 17) {
         compareHands(userHand, dealerHand)
     } else {
@@ -190,7 +184,7 @@ function compareHands(userHand, dealerHand) {
 
 function checkForBlackjack(hand) {
     computeHandValue(hand)
-    if (handValue === 21 && hand.length < 3) {
+    if (handValue === 21 && hand.length === 2) {
         blackjack = true
     } else return
 }
@@ -199,7 +193,10 @@ function newRound() {
     userHand = []
     dealerHand = []
     gameStarted = true
+    blackjack = false
     submitWager.disabled = false
+    hitButton.disabled = true
+    standButton.disabled = true
     initialize()
 }
 
@@ -225,4 +222,20 @@ function appendMessage(text) {
     message.classList.add("message")
     message.innerText = text
     messageBoard.appendChild(message)
+}
+
+function computeHandValue(hand) {
+    handValue = 0
+    numberOfAces = 0
+    hand.forEach(index => {
+       if (index.value === "A") {
+        numberOfAces++
+       }
+       handValue += cardDictionary[index.value]
+       if (handValue > 21 && numberOfAces > 0) {
+        handValue -= 10
+        numberOfAces--
+       }
+    })
+    return handValue
 }

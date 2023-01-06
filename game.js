@@ -17,12 +17,11 @@ const suits = ["♠", "♦", "♣", "♥"]
 const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 const hitButton = document.getElementById("hit")
 const standButton = document.getElementById("stand")
-const submitWager = document.getElementById("submit-wager")
+const submitWagerButton = document.getElementById("submit-wager")
 const wagerBox = document.getElementById("wager")
 const bankP = document.getElementById("bank")
 const userContainer = document.getElementById("user-container")
 const dealerContainer = document.getElementById("dealer-container")
-const gameBoard = document.getElementById("game-board")
 const messageBoard = document.getElementById("message-board")
 let message = document.createElement("h2")
 let userHand = []
@@ -91,7 +90,7 @@ function controller() {
             checkForDealerBust(dealerHand)
         }
     })
-    submitWager.addEventListener("click", () => {
+    submitWagerButton.addEventListener("click", () => {
         if (wagerBox.value === "") {
             wager = 0
         } else {
@@ -102,7 +101,7 @@ function controller() {
         } else {
             hitButton.disabled = false
             standButton.disabled = false
-            submitWager.disabled = true
+            submitWagerButton.disabled = true
             removeCards(dealerContainer)
             removeCards(userContainer)
             bank -= wager
@@ -177,7 +176,7 @@ function compareHands(userHand, dealerHand) {
             bank += (wager * 2)
             bankP.innerText = `Bank: $${bank}`
             newRound()
-            }
+        }
     } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
         appendMessage(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins. Submit a wager to play again.`)
         newRound()
@@ -201,7 +200,7 @@ function newRound() {
     dealerHand = []
     gameStarted = true
     blackjack = false
-    submitWager.disabled = false
+    submitWagerButton.disabled = false
     hitButton.disabled = true
     standButton.disabled = true
     initialize()
@@ -223,8 +222,8 @@ function removeCards(container) {
 
 function appendMessage(text) {
     while (messageBoard.firstChild) {
-            messageBoard.removeChild(messageBoard.firstChild)
-        }
+        messageBoard.removeChild(messageBoard.firstChild)
+    }
     let message = document.createElement("h2")
     message.classList.add("message")
     message.innerText = text
@@ -236,12 +235,12 @@ function computeHandValue(hand) {
     numberOfAces = 0
     hand.forEach(index => {
        if (index.value === "A") {
-        numberOfAces++
+            numberOfAces++
        }
        handValue += cardDictionary[index.value]
        if (handValue > 21 && numberOfAces > 0) {
-        handValue -= 10
-        numberOfAces--
+            handValue -= 10
+            numberOfAces--
        }
     })
     return handValue

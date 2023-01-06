@@ -37,7 +37,7 @@ If the player's hand is worth more than the dealer's hand, the player wins 1x th
 
 If the player is dealt a hand with a value of 21 from the start, they have "Blackjack". As long as the dealer doesn't also have a hand valued at 21, the player will win 1.5x their wager, or 3:2. If the dealer's hand is worth 21, it's a "push".
 
-[player-blackjack](project-screenshots/player-blackjack.png)
+![player-blackjack](project-screenshots/player-blackjack.png)
 		
 ##	Next Steps
 

@@ -1,5 +1,4 @@
 const cardDictionary = {
-    "1": 1,
     "2": 2,
     "3": 3,
     "4": 4,
@@ -60,13 +59,15 @@ class Deck {
     }
 }
 
-const initialize = () => {
+controller()
+
+function initialize() {
     gameDeck = new Deck()
     wager = 0
     return gameDeck.shuffle()
 }
 
-const controller = () => {
+function controller() {
     if (!gameStarted) {
         initialize()
     }
@@ -121,8 +122,6 @@ const controller = () => {
         }
     })
 }
-
-controller()
 
 function newDeck() {
     return values.flatMap(value => {

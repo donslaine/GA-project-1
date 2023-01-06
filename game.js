@@ -1,3 +1,5 @@
+//variable declarations
+
 const cardDictionary = {
     "2": 2,
     "3": 3,
@@ -13,8 +15,27 @@ const cardDictionary = {
     "K": 10,
     "A": 11
 }
-const suits = ["♠", "♦", "♣", "♥"]
-const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+const suits = [
+    "♠", 
+    "♦", 
+    "♣", 
+    "♥"
+]
+const values = [
+    "A", 
+    "2", 
+    "3", 
+    "4", 
+    "5", 
+    "6", 
+    "7", 
+    "8", 
+    "9", 
+    "10", 
+    "J", 
+    "Q", 
+    "K"
+]
 const hitButton = document.getElementById("hit")
 const standButton = document.getElementById("stand")
 const submitWagerButton = document.getElementById("submit-wager")
@@ -27,9 +48,11 @@ let message = document.createElement("h2")
 let userHand = []
 let dealerHand = []
 let bank = 300
-let wager, userHandValue, dealerHandValue, gameDeck, handValue, numberOfAces
+let wager, userHandValue, dealerHandValue, gameDeck
 let blackjack = false
 let gameStarted = false
+
+//classes
 
 class Card {
     constructor(suit, value) {
@@ -58,7 +81,11 @@ class Deck {
     }
 }
 
+//controller invokation
+
 controller()
+
+//function declarations
 
 function initialize() {
     gameDeck = new Deck()
@@ -131,8 +158,8 @@ function newDeck() {
 }
 
 function checkForDealerBust(hand) {
-    computeHandValue(hand)
-    if(handValue > 21) {
+    dealerHandValue = computeHandValue(hand)
+    if(dealerHandValue > 21) {
         checkForBlackjack(userHand)
         if (blackjack) {
             appendMessage("The dealer busted, and you have Blackjack! House pays 3:2. Submit a wager to play again.")
@@ -145,7 +172,7 @@ function checkForDealerBust(hand) {
             bankP.innerText = `Bank: $${bank}`
             newRound()
         }
-    } else if (handValue <= 21 && handValue >= 17) {
+    } else if (dealerHandValue <= 21 && dealerHandValue >= 17) {
         compareHands(userHand, dealerHand)
     } else {
         dealerHand.push(gameDeck.deal())
@@ -155,8 +182,8 @@ function checkForDealerBust(hand) {
 }
 
 function checkForBust(hand) {
-    computeHandValue(hand)
-    if (handValue > 21) {
+    userHandValue = computeHandValue(hand)
+    if (userHandValue > 21) {
         appendMessage("Bust, you lose. Submit a wager to play again.")
         wager = 0
         newRound()
@@ -165,22 +192,24 @@ function checkForBust(hand) {
 
 function compareHands(userHand, dealerHand) {
     checkForBlackjack(userHand)
-    if (computeHandValue(userHand) > computeHandValue(dealerHand)) {
+    userHandValue = computeHandValue(userHand)
+    dealerHandValue = computeHandValue(dealerHand)
+    if (userHandValue > dealerHandValue) {
         if (blackjack) {
             bank += (wager * 2.5)
             bankP.innerText = `Bank: $${bank}`
             appendMessage("Blackjack! House pays 3:2. Submit a wager to play again.")
             newRound()
         } else {
-            appendMessage(`${computeHandValue(userHand)} beats ${computeHandValue(dealerHand)}. You Win! Submit a wager to play again.`)
+            appendMessage(`${userHandValue} beats ${dealerHandValue}. You Win! Submit a wager to play again.`)
             bank += (wager * 2)
             bankP.innerText = `Bank: $${bank}`
             newRound()
         }
-    } else if (computeHandValue(userHand) < computeHandValue(dealerHand)) {
-        appendMessage(`${computeHandValue(dealerHand)} beats ${computeHandValue(userHand)}. The house always wins. Submit a wager to play again.`)
+    } else if (userHandValue < dealerHandValue) {
+        appendMessage(`${dealerHandValue} beats ${userHandValue}. The house always wins. Submit a wager to play again.`)
         newRound()
-    } else if (computeHandValue(userHand) === computeHandValue(dealerHand)) {
+    } else if (userHandValue === dealerHandValue) {
         appendMessage("Push. Submit a wager to play again.")
         bank += wager
         bankP.innerText = `Bank: $${bank}`
@@ -189,8 +218,8 @@ function compareHands(userHand, dealerHand) {
 }
 
 function checkForBlackjack(hand) {
-    computeHandValue(hand)
-    if (handValue === 21 && hand.length === 2) {
+    userHandValue = computeHandValue(hand)
+    if (userHandValue === 21 && hand.length === 2) {
         blackjack = true
     } else return
 }
@@ -207,14 +236,14 @@ function newRound() {
 }
 
 function appendCard(card, container) {
-    const newCard = document.createElement('div')
+    const newCard = document.createElement("div")
     newCard.innerText = card.value
-    newCard.classList.add('card')
+    newCard.classList.add("card")
     container.appendChild(newCard)
 }
 
 function removeCards(container) {
-    let cleanupContainer = container.querySelectorAll('.card')
+    let cleanupContainer = container.querySelectorAll(".card")
     cleanupContainer.forEach(card => {
         container.removeChild(card)
     })
@@ -231,8 +260,8 @@ function appendMessage(text) {
 }
 
 function computeHandValue(hand) {
-    handValue = 0
-    numberOfAces = 0
+    let handValue = 0
+    let numberOfAces = 0
     hand.forEach(index => {
        if (index.value === "A") {
             numberOfAces++

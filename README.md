@@ -55,8 +55,6 @@ Version 2:
 		
 6. As a user, I would like sounds to play when I lose the game
 
-7. As a user, I would like 
-
 Version 3:
 		
 1. As a user, I want to implement a multiplayer option

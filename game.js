@@ -81,7 +81,7 @@ class Deck {
     }
 }
 
-//controller invokation
+//controller invocation
 
 controller()
 
